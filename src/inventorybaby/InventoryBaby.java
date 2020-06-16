@@ -111,10 +111,9 @@ public class InventoryBaby extends JFrame implements ItemListener{
         rAdmin.setForeground(Color.white);
         rAdmin.addItemListener(this);
         //Login Objects Ending
+
         
-        
-        
-        Cashier.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        Cashier.setSize(1200, 700);
         Cashier.setLocationRelativeTo(null);
         Cashier.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Cashier.setLayout(null);
@@ -122,7 +121,7 @@ public class InventoryBaby extends JFrame implements ItemListener{
         
         
         Cashier.add(CMBgenre);
-        CMBgenre.setBounds(200,200,200,50);
+        CMBgenre.setBounds(100,100,200,50);
         CMBgenre.addActionListener(new ActionListener(){ //Genre
             public void actionPerformed(ActionEvent e){
             JComboBox cb = (JComboBox) e.getSource();
@@ -136,8 +135,9 @@ public class InventoryBaby extends JFrame implements ItemListener{
         CMBgenre.addItem("Sci-Fi");
         
         Cashier.add(LSTmovies);
-        LSTmovies.setBounds(400,200,400,400);
+        LSTmovies.setBounds(100,160,400,400);
         Cashier.add(itemArea);
+        itemArea.setBounds(700,160,400,400);
         
         Cashier.add(logout);
         logout.setBounds(1050,5,120,30);
@@ -211,7 +211,7 @@ public class InventoryBaby extends JFrame implements ItemListener{
             while(input.hasNextLine()){
                 String line;
                 idItem[listCount] = Integer.parseInt(input.next());
-                //imageItem[listCount] = input.next();
+                imageItem[listCount] = input.next();
                 nameItem[listCount] = input.nextLine();
                 qtyItem[listCount] = input.nextInt();
                 priceItem[listCount] = input.nextDouble();
