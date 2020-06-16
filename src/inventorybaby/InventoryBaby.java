@@ -37,7 +37,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     JFrame Cashier = new JFrame();
     JList LSTmovies = new JList();
     JComboBox<String> CMBgenre = new JComboBox<String>();
-    String address = "C:\\Users\\David Yabis\\Documents\\NetBeansProjects\\inventoryBaby\\src\\inventorybaby\\";
+    String address = "C:\\Users\\David Yabis\\Documents\\GitHub\\InventoryBaby(1)\\inventoryBaby\\src\\inventorybaby\\";
     String genre[] ={address+"Action.txt", address+"Adventure.txt", address+"Comedy.txt", address+"Romance.txt", address+"Sci-Fi.txt"};
     JButton  logout = new JButton("Logout");;
     double payment, TPrice, change, priceItem[] = new double[9	];
@@ -128,7 +128,6 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             	String movie = (String) CMBgenre.getSelectedItem();
 	    		try {
 	    			ProductReader(address + "products//" + movie + ".txt");	
-	    			ProductReader(movie + ".txt");	
 	    		} catch (Exception x){
 	    			JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
 	    		}
@@ -141,9 +140,10 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         CMBgenre.addItem("Sci-Fi");
         
         Cashier.add(LSTmovies);
-        LSTmovies.setBounds(100,160,400,400);
+        LSTmovies.setBounds(700,160,400,400);
         Cashier.add(itemArea);
-        itemArea.setBounds(700,160,400,400);
+        itemArea.setBounds(100,160,400,200);
+        
         
         Cashier.add(logout);
         logout.setBounds(1050,5,120,30);
