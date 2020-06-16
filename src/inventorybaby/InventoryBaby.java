@@ -47,10 +47,6 @@ public class InventoryBaby extends JFrame implements ItemListener{
     DefaultListModel<String> itemList = new DefaultListModel<>();
     JList itemArea = new JList(itemList);
     
-    
-    //waowaowaowaw
-    
-    
     JFrame Admin = new JFrame();
     
     public InventoryBaby(){
