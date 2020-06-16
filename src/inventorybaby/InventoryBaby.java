@@ -93,7 +93,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
            		user = textUser.getText();
            		pass = String.valueOf(textPassword.getPassword());
            		System.out.println(user + " " + pass);
-            	UserScanner("accounts.txt");
+            	UserScanner(address + "accounts.txt");
             }
         });
         rCash = new JRadioButton("Cashier");
