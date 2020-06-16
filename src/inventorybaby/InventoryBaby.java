@@ -139,10 +139,10 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         CMBgenre.addItem("Romance");
         CMBgenre.addItem("Sci-Fi");
         
-        Cashier.add(LSTmovies);
+        Cashier.add(LSTmovies); // Cart
         LSTmovies.setBounds(700,160,400,400);
-        Cashier.add(itemArea);
-        itemArea.setBounds(100,160,400,200);
+        Cashier.add(itemArea); // Movie List
+        itemArea.setBounds(100,160,500,200);
         
         
         Cashier.add(logout);
@@ -223,7 +223,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 nameItem[listCount] = lineArr[1]; //String 
                 qtyItem[listCount] = Integer.parseInt(lineArr[2]); //Integer
                 priceItem[listCount] = Double.parseDouble(lineArr[3]); //Double;
-                itemList.addElement(idItem[listCount] + "/" + nameItem[listCount] + "/" +qtyItem[listCount]+"/"+ priceItem[listCount]);
+                itemList.addElement(String.format("%-20s",idItem[listCount])+ " " + String.format("%-20s",qtyItem[listCount])+ " " + String.format("%-40s",priceItem[listCount]) + String.format("%-10s",nameItem[listCount]));
                 listCount++;
             }
             input.close();
