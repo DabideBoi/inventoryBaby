@@ -2,4 +2,8 @@ Action
 Adventure
 Comedy
 Romance
+Action
+Adventure
+Comedy
+Romance
 Sci-Fi

@@ -128,6 +128,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             	String movie = (String) CMBgenre.getSelectedItem();
 	    		try {
 	    			ProductReader(address + "products//" + movie + ".txt");	
+	    			ProductReader(movie + ".txt");	
 	    		} catch (Exception x){
 	    			JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
 	    		}
