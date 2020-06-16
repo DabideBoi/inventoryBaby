@@ -1,0 +1,5 @@
+Action
+Adventure
+Comedy
+Romance
+Sci-Fi

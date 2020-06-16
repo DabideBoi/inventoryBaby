@@ -1,0 +1,9 @@
+ROMMOV001/Casa Blanca/22/279.99
+ROMMOV002/Call me by Your Name/14/559.99
+ROMMOV003/The Shape of Water/35/489.99
+ROMMOV004/Titanic/32/279.99
+ROMMOV005/Before Sunset/22/279.99
+ROMMOV006/Midnight in Paris/17/279.99
+ROMMOV007/Crazy Rich Asians/80/489.99
+ROMMOV008/A Star is Born/13/559.99
+ROMMOV009/P.S I Love You/24/279.99
