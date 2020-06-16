@@ -20,7 +20,8 @@ import java.util.*;
  *
  * @author David Yabis
  */
-public class InventoryBaby extends JFrame implements ItemListener{
+ 
+public class InventoryBaby extends JFrame implements ItemListener, ActionListener{
     JFrame Login = new JFrame();
     JLabel labelUsername, labelPassword;
     JTextField textUser;
@@ -39,11 +40,11 @@ public class InventoryBaby extends JFrame implements ItemListener{
     String address = "C:\\Users\\David Yabis\\Documents\\NetBeansProjects\\inventoryBaby\\src\\inventorybaby\\";
     String genre[] ={address+"Action.txt", address+"Adventure.txt", address+"Comedy.txt", address+"Romance.txt", address+"Sci-Fi.txt"};
     JButton  logout = new JButton("Logout");;
-    double payment, TPrice, change, priceItem[] = new double[8];
+    double payment, TPrice, change, priceItem[] = new double[9	];
     DecimalFormat decForm = new DecimalFormat("#######.00");
-    int listCount = 0, qtyItem[] = new int[8], idItem[]= new int[8], indexItem[] = new int[8], PqtyItem,selectedIndex, editConfirmation = 0, tPrice = 0;
-    String selectedItem, imageItem[] = new String[8], nameItem[] = new String[8];
-    String[] lineArr;
+    String idItem[] = new String[9], nameItem[] = new String[9];
+    int listCount = 0, qtyItem[] = new int[9], PqtyItem,selectedIndex, editConfirmation = 0, tPrice = 0;
+    String selectedItem, imageItem[] = new String[9];
     DefaultListModel<String> itemList = new DefaultListModel<>();
     JList itemArea = new JList(itemList);
     
@@ -89,10 +90,10 @@ public class InventoryBaby extends JFrame implements ItemListener{
         bEnter.setBounds(190, 340, 100,20);
         bEnter.addActionListener(new ActionListener(){ //Enter
             public void actionPerformed(ActionEvent e){
-            user = textUser.getText();
-            pass = String.valueOf(textPassword.getPassword());
-            System.out.println(user + " " + pass);
-            UserScanner(address + "accounts.txt");
+           		user = textUser.getText();
+           		pass = String.valueOf(textPassword.getPassword());
+           		System.out.println(user + " " + pass);
+            	UserScanner(address + "accounts.txt");
             }
         });
         rCash = new JRadioButton("Cashier");
@@ -124,8 +125,12 @@ public class InventoryBaby extends JFrame implements ItemListener{
         CMBgenre.setBounds(100,100,200,50);
         CMBgenre.addActionListener(new ActionListener(){ //Genre
             public void actionPerformed(ActionEvent e){
-            JComboBox cb = (JComboBox) e.getSource();
-            String books = (String) cb.getSelectedItem();
+            	String movie = (String) CMBgenre.getSelectedItem();
+	    		try {
+	    			ProductReader(address + "products//" + movie + ".txt");	
+	    		} catch (Exception x){
+	    			JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
+	    		}
             }
         });
         CMBgenre.addItem("Action");
@@ -143,10 +148,10 @@ public class InventoryBaby extends JFrame implements ItemListener{
         logout.setBounds(1050,5,120,30);
         logout.addActionListener(new ActionListener(){ //LogOut
             public void actionPerformed(ActionEvent e){
-            Cashier.dispose();
-            textUser.setText("");
-            textPassword.setText("");
-            Login.setVisible(true);
+	            Cashier.dispose();
+	            textUser.setText("");
+	            textPassword.setText("");
+	            Login.setVisible(true);
             }
         });
        
@@ -155,51 +160,53 @@ public class InventoryBaby extends JFrame implements ItemListener{
         Admin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Admin.setLayout(null);
         Admin.setTitle("Admin");
-        
+    } //END OF CONSTRUCTOR
+    
+    
+    public void actionPerformed(ActionEvent e){
 
-        
-        
-        
     }
     
     public void UserScanner(String Text){
         if(rCash.isSelected()){
-        try{
-            Scanner users = new Scanner(new FileReader(Text));
-            while(users.hasNextLine()){
-                LUser = users.next();
-                LPass = users.next();
-                LType = users.next();
-                if(user.equals(LUser) && pass.equals(LPass) && accType.equals(LType)){ //cashier type
-                    Login.dispose();
-                    Cashier.setVisible(true);
-                    System.out.println("yoink");
-                    break;
-                }   
-            }
-            System.out.println(LUser + " " + LPass + " " + LType);
-        }
-        catch (Exception ex){
-        }
-        }
+	        try{
+	            Scanner users = new Scanner(new FileReader(Text));
+	            while(users.hasNextLine()){
+	                LUser = users.next();
+	                LPass = users.next();
+	                LType = users.next();
+	                if(user.equals(LUser) && pass.equals(LPass) && accType.equals(LType)){ //cashier type
+	                    Login.dispose();
+	                    Cashier.setVisible(true);
+	                    System.out.println("yoink");
+	                    break;
+	                }   
+	                System.out.println(LUser + " " + LPass + " " + LType);
+	            }
+	            
+	        }
+	        catch (Exception ex){
+	        }
+	        }
         else if(rAdmin.isSelected()){
-        try{
-            Scanner users = new Scanner(new FileReader(Text));
-            while(users.hasNextLine()){
-                LUser = users.next();
-                LPass = users.next();
-                LType = users.next();
-                if(user.equals(LUser) && pass.equals(LPass) && accType.equals(LType)){ //admin type
-                    Login.dispose();
-                    Admin.setVisible(true);
-                    System.out.println("boink");
-                    break;
-                }
-            }
-            System.out.println(LUser + " " + LPass + " " + LType);
-        }
-        catch (Exception ex){
-        }
+	        try{
+	            Scanner users = new Scanner(new FileReader(Text));
+	            while(users.hasNextLine()){
+	                LUser = users.next();
+	                LPass = users.next();
+	                LType = users.next();
+	                if(user.equals(LUser) && pass.equals(LPass) && accType.equals(LType)){ //admin type
+	                    Login.dispose();
+	                    Admin.setVisible(true);
+	                    System.out.println("boink");
+	                    break;
+	                }
+	                System.out.println(LUser + " " + LPass + " " + LType);
+	            }
+	            
+	        }
+	        catch (Exception ex){
+	        }
         }
     }
     
@@ -209,13 +216,13 @@ public class InventoryBaby extends JFrame implements ItemListener{
         try{
             Scanner input = new Scanner(new FileReader(txt));
             while(input.hasNextLine()){
-                String line;
-                idItem[listCount] = Integer.parseInt(input.next());
-                imageItem[listCount] = input.next();
-                nameItem[listCount] = input.nextLine();
-                qtyItem[listCount] = input.nextInt();
-                priceItem[listCount] = input.nextDouble();
-                itemList.addElement(idItem[listCount]+" "+ nameItem[listCount] +"  "+qtyItem[listCount]+" "+priceItem[listCount]);
+                String line = input.nextLine(); String[] lineArr = line.split("/");
+                idItem[listCount] = lineArr[0]; //String
+                //imageItem[listCount] = input.next();
+                nameItem[listCount] = lineArr[1]; //String 
+                qtyItem[listCount] = Integer.parseInt(lineArr[2]); //Integer
+                priceItem[listCount] = Double.parseDouble(lineArr[3]); //Double;
+                itemList.addElement(idItem[listCount] + "/" + nameItem[listCount] + "/" +qtyItem[listCount]+"/"+ priceItem[listCount]);
                 listCount++;
             }
             input.close();
