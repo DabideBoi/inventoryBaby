@@ -39,14 +39,15 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     JComboBox<String> CMBgenre = new JComboBox<String>();
     String address = "C:\\Users\\David Yabis\\Documents\\GitHub\\InventoryBaby(1)\\inventoryBaby\\src\\inventorybaby\\";
     String genre[] ={address+"Action.txt", address+"Adventure.txt", address+"Comedy.txt", address+"Romance.txt", address+"Sci-Fi.txt"};
-    JButton  logout = new JButton("Logout");;
+    JButton  logout = new JButton("Logout"), moveToCart = new JButton("Move"), removeToCart = new JButton("Remove");
     double payment, TPrice, change, priceItem[] = new double[9	];
     DecimalFormat decForm = new DecimalFormat("#######.00");
     String idItem[] = new String[9], nameItem[] = new String[9];
     int listCount = 0, qtyItem[] = new int[9], PqtyItem,selectedIndex, editConfirmation = 0, tPrice = 0;
     String selectedItem, imageItem[] = new String[9];
-    DefaultListModel<String> itemList = new DefaultListModel<>();
+    DefaultListModel<String> itemList = new DefaultListModel<>(), cart = new DefaultListModel<>();
     JList itemArea = new JList(itemList);
+    
     
     JFrame Admin = new JFrame();
     
@@ -141,8 +142,10 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         
         Cashier.add(LSTmovies); // Cart
         LSTmovies.setBounds(700,160,400,400);
+        LSTmovies.setModel(cart);
         Cashier.add(itemArea); // Movie List
         itemArea.setBounds(100,160,500,200);
+        
         
         
         Cashier.add(logout);
@@ -152,8 +155,35 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
 	            Cashier.dispose();
 	            textUser.setText("");
 	            textPassword.setText("");
+                    cart.removeAllElements();
 	            Login.setVisible(true);
             }
+        });
+        Cashier.add(moveToCart);
+        moveToCart.setBounds(610,170,80,30);
+        moveToCart.addActionListener(new ActionListener(){
+           public void actionPerformed(ActionEvent e){
+             
+                for (Iterator it = itemArea.getSelectedValuesList().iterator(); it.hasNext();) {
+                    String sel = (String) it.next();
+                    if (cart.contains(sel)) {
+                    } else 
+                        cart.addElement(sel);
+
+                    }
+          
+                }
+        });
+         Cashier.add(removeToCart);
+        removeToCart.setBounds(610,210,80,30);
+        removeToCart.addActionListener(new ActionListener(){
+           public void actionPerformed(ActionEvent e){
+             
+                int index = LSTmovies.getSelectedIndex();
+                if (index != -1) {
+                    cart.remove(index);
+                }
+           }
         });
        
         Admin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
