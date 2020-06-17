@@ -37,8 +37,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     JFrame Cashier = new JFrame();
     JList LSTmovies = new JList();
     JComboBox<String> CMBgenre = new JComboBox<String>();
-    String address = "C:\\Users\\David Yabis\\Documents\\GitHub\\InventoryBaby(1)\\inventoryBaby\\src\\inventorybaby\\";
-    String genre[] ={address+"Action.txt", address+"Adventure.txt", address+"Comedy.txt", address+"Romance.txt", address+"Sci-Fi.txt"};
+    String genre[] ={"Action.txt", "Adventure.txt", "Comedy.txt", "Romance.txt", "Sci-Fi.txt"};
     JButton  logout = new JButton("Logout"), moveToCart = new JButton("Move"), removeToCart = new JButton("Remove");
     double payment, TPrice, change, priceItem[] = new double[9	];
     DecimalFormat decForm = new DecimalFormat("#######.00");
@@ -94,7 +93,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
            		user = textUser.getText();
            		pass = String.valueOf(textPassword.getPassword());
            		System.out.println(user + " " + pass);
-            	UserScanner(address + "accounts.txt");
+            	UserScanner("accounts.txt");
             }
         });
         rCash = new JRadioButton("Cashier");
@@ -128,7 +127,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             public void actionPerformed(ActionEvent e){
             	String movie = (String) CMBgenre.getSelectedItem();
 	    		try {
-	    			ProductReader(address + "products//" + movie + ".txt");	
+	    			ProductReader("products//" + movie + ".txt");	
 	    		} catch (Exception x){
 	    			JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
 	    		}
