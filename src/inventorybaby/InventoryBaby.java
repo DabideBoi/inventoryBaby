@@ -29,25 +29,29 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     JButton bEnter, bCancel;
     JRadioButton rCash, rAdmin;
     ButtonGroup Grp1 = new ButtonGroup();
-    
     String LUser, LPass, LType;
     String user, pass;
     String cashier = "cashier", admin = "admin", accType;
+    DecimalFormat df = new DecimalFormat("0.00");
     
     JFrame Cashier = new JFrame();
     JList LSTmovies = new JList();
     JComboBox<String> CMBgenre = new JComboBox<String>();
     String genre[] ={"Action.txt", "Adventure.txt", "Comedy.txt", "Romance.txt", "Sci-Fi.txt"};
     JButton  logout = new JButton("Logout"), moveToCart = new JButton("Move"), removeToCart = new JButton("Remove");
-    double payment, TPrice, change, priceItem[] = new double[9	];
+    double payment, TPrice, change, priceItem[] = new double[9];
     DecimalFormat decForm = new DecimalFormat("#######.00");
     String idItem[] = new String[9], nameItem[] = new String[9];
-    int listCount = 0, qtyItem[] = new int[9], PqtyItem,selectedIndex, editConfirmation = 0, tPrice = 0;
-    String selectedItem, imageItem[] = new String[9];
     DefaultListModel<String> itemList = new DefaultListModel<>(), cart = new DefaultListModel<>();
     JList itemArea = new JList(itemList);
+    int listCount = 0, qtyItem[] = new int[9], editConfirmation = 0, tPrice = 0;
+    String imageItem[] = new String[9]; 
+    ArrayList<String> cartList = new ArrayList<String>();
+    JLabel Sum = new JLabel("Php 0");
+    Double cartSum = 0.00;
+
     
-    
+
     JFrame Admin = new JFrame();
     
     public InventoryBaby(){
@@ -120,9 +124,8 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         Cashier.setLayout(null);
         Cashier.setTitle("Cashier");
         
-        
         Cashier.add(CMBgenre);
-        CMBgenre.setBounds(100,100,200,50);
+        CMBgenre.setBounds(50,100,200,50);
         CMBgenre.addActionListener(new ActionListener(){ //Genre
             public void actionPerformed(ActionEvent e){
             	String movie = (String) CMBgenre.getSelectedItem();
@@ -140,10 +143,10 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         CMBgenre.addItem("Sci-Fi");
         
         Cashier.add(LSTmovies); // Cart
-        LSTmovies.setBounds(700,160,400,400);
+        LSTmovies.setBounds(650,160,470,400);
         LSTmovies.setModel(cart);
         Cashier.add(itemArea); // Movie List
-        itemArea.setBounds(100,160,500,200);
+        itemArea.setBounds(50,160,500,200);
         
         
         
@@ -154,27 +157,50 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
 	            Cashier.dispose();
 	            textUser.setText("");
 	            textPassword.setText("");
-                    cart.removeAllElements();
+                cart.removeAllElements();
 	            Login.setVisible(true);
             }
         });
         Cashier.add(moveToCart);
-        moveToCart.setBounds(610,170,80,30);
+        moveToCart.setBounds(560,170,80,30);
         moveToCart.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-             
-                for (Iterator it = itemArea.getSelectedValuesList().iterator(); it.hasNext();) {
-                    String sel = (String) it.next();
-                    if (cart.contains(sel)) {
-                    } else 
-                        cart.addElement(sel);
+            String selectedItem = (String) itemArea.getSelectedValue();
+            int selectedIndex= itemArea.getSelectedIndex();
+                if (selectedItem == null){
+                    JOptionPane.showMessageDialog(null, "Ui walang laman, vro");
+                } 
+                else{
+                    try
+                    {String stockInput = JOptionPane.showInputDialog(null, "Ilan ilalagay mo na " + nameItem[selectedIndex] + " vro?", "Ilan ilalagay mo vro?", JOptionPane.OK_CANCEL_OPTION);
+                    if(stockInput != null){
+                                int newQty = Integer.parseInt(stockInput);
+                                String[] sel = new String[4];
+                                sel[0] = idItem[selectedIndex];
+                                sel[1] = nameItem[selectedIndex];
+                                sel[2] = Integer.toString(newQty);
+                                sel[3] = Double.toString(newQty*priceItem[selectedIndex]);
+                                cart.addElement(String.format("%-20s",sel[0])+ " " + String.format("%-20s",sel[2])+ " " + String.format("%-20s", sel[3]) + " " + String.format("%-10s",sel[1]));
+
+                                
+                                cartSum += newQty*priceItem[selectedIndex];
+                                Sum.setText("Php" + df.format(cartSum));
+                            }
+                    else{
+
 
                     }
-          
+
+    
+                
+                }catch(Exception ex){
+
                 }
+            }
+            }
         });
          Cashier.add(removeToCart);
-        removeToCart.setBounds(610,210,80,30);
+        removeToCart.setBounds(560,210,80,30);
         removeToCart.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
              
@@ -184,6 +210,9 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 }
            }
         });
+        Cashier.add(Sum);
+        Sum.setBounds(1050,580,80,30);
+        
        
         Admin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         Admin.setLocationRelativeTo(null);
@@ -252,7 +281,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 nameItem[listCount] = lineArr[1]; //String 
                 qtyItem[listCount] = Integer.parseInt(lineArr[2]); //Integer
                 priceItem[listCount] = Double.parseDouble(lineArr[3]); //Double;
-                itemList.addElement(String.format("%-20s",idItem[listCount])+ " " + String.format("%-20s",qtyItem[listCount])+ " " + String.format("%-40s",priceItem[listCount]) + String.format("%-10s",nameItem[listCount]));
+                itemList.addElement(String.format("%-20s",idItem[listCount])+ " " + String.format("%-20s",qtyItem[listCount])+ " " + String.format("%-40s",df.format(priceItem[listCount])) + String.format("%-10s",nameItem[listCount]));
                 listCount++;
             }
             input.close();
