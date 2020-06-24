@@ -6,12 +6,14 @@
 package inventorybaby;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.ItemListener;
 import java.io.FileNotFoundException;
 import java.awt.event.ActionEvent;
-import java.io.File;
+import java.io.*;
 import java.io.FileReader;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -35,21 +37,24 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     DecimalFormat df = new DecimalFormat("0.00");
     
     JFrame Cashier = new JFrame();
-    JList LSTmovies = new JList();
+    
+    String[] cols = {"ID Code", "Amount", "Price", "Name"};
+    String[] sel = new String[4];
+    DefaultTableModel cart = new DefaultTableModel(cols, 0);
+    JTable LSTmovies = new JTable(cart);
     JComboBox<String> CMBgenre = new JComboBox<String>();
     String genre[] ={"Action.txt", "Adventure.txt", "Comedy.txt", "Romance.txt", "Sci-Fi.txt"};
     JButton  logout = new JButton("Logout"), moveToCart = new JButton("Move"), removeToCart = new JButton("Remove");
     double payment, TPrice, change, priceItem[] = new double[9];
     DecimalFormat decForm = new DecimalFormat("#######.00");
     String idItem[] = new String[9], nameItem[] = new String[9];
-    DefaultListModel<String> itemList = new DefaultListModel<>(), cart = new DefaultListModel<>();
+    DefaultListModel<String> itemList = new DefaultListModel<>();
     JList itemArea = new JList(itemList);
     int listCount = 0, qtyItem[] = new int[9], editConfirmation = 0, tPrice = 0;
     String imageItem[] = new String[9]; 
     ArrayList<String> cartList = new ArrayList<String>();
     JLabel Sum = new JLabel("Php 0");
     Double cartSum = 0.00;
-
     
 
     JFrame Admin = new JFrame();
@@ -144,7 +149,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         
         Cashier.add(LSTmovies); // Cart
         LSTmovies.setBounds(650,160,470,400);
-        LSTmovies.setModel(cart);
+        //LSTmovies.setModel(cart);
         Cashier.add(itemArea); // Movie List
         itemArea.setBounds(50,160,500,200);
         
@@ -157,14 +162,17 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
 	            Cashier.dispose();
 	            textUser.setText("");
 	            textPassword.setText("");
-                cart.removeAllElements();
-	            Login.setVisible(true);
+                cart.getDataVector().removeAllElements();
+                Login.setVisible(true);
+                cartSum = 0.00;
+                Sum.setText("Php 0.00");
             }
         });
         Cashier.add(moveToCart);
         moveToCart.setBounds(560,170,80,30);
         moveToCart.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
+            int count = 0;
             String selectedItem = (String) itemArea.getSelectedValue();
             int selectedIndex= itemArea.getSelectedIndex();
                 if (selectedItem == null){
@@ -175,21 +183,18 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                     {String stockInput = JOptionPane.showInputDialog(null, "Ilan ilalagay mo na " + nameItem[selectedIndex] + " vro?", "Ilan ilalagay mo vro?", JOptionPane.OK_CANCEL_OPTION);
                     if(stockInput != null){
                                 int newQty = Integer.parseInt(stockInput);
-                                String[] sel = new String[4];
+                                Double waow = newQty*priceItem[selectedIndex];
                                 sel[0] = idItem[selectedIndex];
                                 sel[1] = nameItem[selectedIndex];
                                 sel[2] = Integer.toString(newQty);
-                                sel[3] = Double.toString(newQty*priceItem[selectedIndex]);
-                                cart.addElement(String.format("%-20s",sel[0])+ " " + String.format("%-20s",sel[2])+ " " + String.format("%-20s", sel[3]) + " " + String.format("%-10s",sel[1]));
-
+                                sel[3] = df.format(waow).toString();
+                                Object[] row = {sel[0],sel[1],sel[2],sel[3]};
+                                cart.addRow(row);
+                                JOptionPane.showMessageDialog(null, "boink");
                                 
                                 cartSum += newQty*priceItem[selectedIndex];
                                 Sum.setText("Php" + df.format(cartSum));
                             }
-                    else{
-
-
-                    }
 
     
                 
@@ -203,11 +208,24 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         removeToCart.setBounds(560,210,80,30);
         removeToCart.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-             
-                int index = LSTmovies.getSelectedIndex();
-                if (index != -1) {
-                    cart.remove(index);
+            
+            
+            for( int i = cart.getRowCount() - 1; i >= 0; --i )
+            {   
+                
+                int k = LSTmovies.getSelectedRow();
+                if(k == i){
+                    Double pronk = 0.00;
+                    Double sel2 = Double.parseDouble(sel[2]);
+                    Double sel3 = Double.parseDouble(sel[3]);
+                    pronk = sel2*sel3;
+                    cartSum -= pronk;
+                    Sum.setText("Php" + df.format(cartSum));
+                    cart.removeRow(k);
+                    
                 }
+                
+            }
            }
         });
         Cashier.add(Sum);
@@ -290,6 +308,16 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             e.printStackTrace();
         }
         }
+    public void ProductWriter(String textFile, int quantTxt, int quantInput){
+            try{
+            File file = new File(textFile);
+            file.createNewFile();
+            FileWriter fw = new FileWriter(file);
+            
+            }catch(IOException ex){
+
+            }
+    }
     
     public void itemStateChanged(ItemEvent e){
         if(rCash.isSelected()){
