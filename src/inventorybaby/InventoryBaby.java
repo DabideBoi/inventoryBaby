@@ -6,6 +6,8 @@
 package inventorybaby;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
@@ -44,6 +46,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     JTable LSTmovies = new JTable(cart);
     JComboBox<String> CMBgenre = new JComboBox<String>();
     String genre[] ={"Action.txt", "Adventure.txt", "Comedy.txt", "Romance.txt", "Sci-Fi.txt"};
+    ArrayList<String> category = new ArrayList<String>();
     JButton  logout = new JButton("Logout"), moveToCart = new JButton("Move"), removeToCart = new JButton("Remove");
     double payment, TPrice, change, priceItem[] = new double[9];
     DecimalFormat decForm = new DecimalFormat("#######.00");
@@ -55,7 +58,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     ArrayList<String> cartList = new ArrayList<String>();
     JLabel Sum = new JLabel("Php 0");
     Double cartSum = 0.00;
-    
+    String movie;
 
     JFrame Admin = new JFrame();
     
@@ -133,7 +136,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         CMBgenre.setBounds(50,100,200,50);
         CMBgenre.addActionListener(new ActionListener(){ //Genre
             public void actionPerformed(ActionEvent e){
-            	String movie = (String) CMBgenre.getSelectedItem();
+            	movie = (String) CMBgenre.getSelectedItem();
 	    		try {
 	    			ProductReader("products//" + movie + ".txt");	
 	    		} catch (Exception x){
@@ -166,6 +169,23 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 Login.setVisible(true);
                 cartSum = 0.00;
                 Sum.setText("Php 0.00");
+                
+            }
+        });
+        LSTmovies.getModel().addTableModelListener(new TableModelListener(){
+        
+            @Override
+            public void tableChanged(TableModelEvent e) {
+
+                cartSum = 0.00;
+                for (int i = 0, rows = cart.getRowCount(); i < rows; i++)
+{                   double quant = Double.parseDouble((String) cart.getValueAt(i, 2));
+                    double presyo = Double.parseDouble((String) cart.getValueAt(i, 3));
+                        
+                        cartSum += presyo ;
+                        System.out.println(quant + " " + presyo + " " + cartSum);
+                        Sum.setText("Php" + df.format(cartSum));         
+}
             }
         });
         Cashier.add(moveToCart);
@@ -179,8 +199,8 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                     JOptionPane.showMessageDialog(null, "Ui walang laman, vro");
                 } 
                 else{
-                    try
-                    {String stockInput = JOptionPane.showInputDialog(null, "Ilan ilalagay mo na " + nameItem[selectedIndex] + " vro?", "Ilan ilalagay mo vro?", JOptionPane.OK_CANCEL_OPTION);
+                    try{
+                    String stockInput = JOptionPane.showInputDialog(null, "Ilan ilalagay mo na " + nameItem[selectedIndex] + " vro?", "Ilan ilalagay mo vro?", JOptionPane.OK_CANCEL_OPTION);
                     if(stockInput != null){
                                 int newQty = Integer.parseInt(stockInput);
                                 Double waow = newQty*priceItem[selectedIndex];
@@ -190,43 +210,55 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                                 sel[3] = df.format(waow).toString();
                                 Object[] row = {sel[0],sel[1],sel[2],sel[3]};
                                 cart.addRow(row);
-                                JOptionPane.showMessageDialog(null, "boink");
-                                
                                 cartSum += newQty*priceItem[selectedIndex];
-                                Sum.setText("Php" + df.format(cartSum));
+                                FileWriter("products//" + movie + ".txt", idItem[selectedIndex], newQty, true);
+                                ProductReader("products//" + movie + ".txt");
                             }
 
     
                 
                 }catch(Exception ex){
-
+                    JOptionPane.showMessageDialog(null, ex);
+                    System.out.println(ex);
                 }
             }
             }
+        
         });
-         Cashier.add(removeToCart);
+        Cashier.add(removeToCart);
         removeToCart.setBounds(560,210,80,30);
         removeToCart.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
             
-            
+            int selectedRowIndex = LSTmovies.getSelectedRow();
+            try{
+                String bab = (cart.getValueAt(selectedRowIndex, 0).toString());
+                String babs = (cart.getValueAt(selectedRowIndex, 2).toString());
+                int dabs = Integer.parseInt(babs);
+                FileWriter("products//" + movie + ".txt", bab, dabs, false);
+                ProductReader("products//" + movie + ".txt");}
+
+                catch(Exception x){
+                    JOptionPane.showMessageDialog(null,x);
+    
+                }
             for( int i = cart.getRowCount() - 1; i >= 0; --i )
             {   
                 
-                int k = LSTmovies.getSelectedRow();
-                if(k == i){
-                    Double pronk = 0.00;
-                    Double sel2 = Double.parseDouble(sel[2]);
-                    Double sel3 = Double.parseDouble(sel[3]);
-                    pronk = sel2*sel3;
-                    cartSum -= pronk;
-                    Sum.setText("Php" + df.format(cartSum));
-                    cart.removeRow(k);
-                    
+                if(selectedRowIndex == i){
+                    cart.removeRow(selectedRowIndex);
+                    if(isEmpty(LSTmovies)==true){
+                        cartSum = 0.00;
+                        Sum.setText("Php 0.00");
+                    }
                 }
-                
             }
+            
+           
+            
+            
            }
+           
         });
         Cashier.add(Sum);
         Sum.setBounds(1050,580,80,30);
@@ -287,6 +319,43 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         }
     }
     
+    public void FileWriter(String txtFile, String idNum, int itemStock, boolean Operation){
+        try{
+            ArrayList<String> yoinkList = new ArrayList<String>();
+            int Sabuco; 
+            Scanner input = new Scanner(new FileReader(txtFile));
+            while(input.hasNextLine()){
+                String line = input.nextLine(); String[] lineArr = line.split("/");
+                    int k = 0;
+                    if(lineArr[k].equals(idNum)){
+                        if (Operation == true)
+                            Sabuco = Integer.parseInt(lineArr[2]) - itemStock;
+                        else
+                            Sabuco = Integer.parseInt(lineArr[2]) + itemStock;
+                        yoinkList.add(lineArr[0] + "/" + lineArr[1] + "/" + Sabuco + "/" + lineArr[3] /* + "/" + picID     remove comments if picID is ready*/);
+                    }
+                    else{
+                        yoinkList.add(line);
+                    }
+                    k++;       
+                } 
+        
+            try{
+            PrintWriter RebongJunior = new PrintWriter(txtFile);
+                for(String Manolito : yoinkList){ // ahh komedyante ka na nyan?
+                    RebongJunior.println(Manolito);
+                }
+            yoinkList.clear();
+            RebongJunior.close();
+                }catch( NoSuchElementException yo){}
+        }catch(FileNotFoundException ex){
+            JOptionPane.showMessageDialog(null, "Vro di ko mabasa file mo", "Ui pre wala dito", JOptionPane.OK_OPTION);
+        }
+
+
+
+    }
+
     public void ProductReader(String txt) throws FileNotFoundException{
         listCount = 0;
         itemList.removeAllElements();
@@ -308,7 +377,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             e.printStackTrace();
         }
         }
-    public void ProductWriter(String textFile, int quantTxt, int quantInput){
+   /* public void ProductWriter(String textFile, int quantTxt, int quantInput){
             try{
             File file = new File(textFile);
             file.createNewFile();
@@ -317,6 +386,12 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             }catch(IOException ex){
 
             }
+    }*/
+    public static boolean isEmpty(JTable jTable) {
+        if (jTable != null && jTable.getModel() != null) {
+            return jTable.getModel().getRowCount()<=0?true:false;
+        }
+        return false;
     }
     
     public void itemStateChanged(ItemEvent e){
