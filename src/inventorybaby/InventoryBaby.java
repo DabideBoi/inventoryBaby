@@ -381,6 +381,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                     receiptList.add(" Received    :                     "+(CashIn)+"");
                     receiptList.add(" Total amount:                     "+(receiptSum)+"");
                     receiptList.add(" Change      :                     "+(df.format(change))+"");
+                    receiptList.add(" Cashier Name:                     "+(LUser)+"");
                     receiptList.add("-------------------------------------------");
                     receiptList.add("             Free Home Delivery         ");
                     receiptList.add("                03111111111             ");
@@ -426,11 +427,14 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                         {
                             Writer output;
                             output = new BufferedWriter(new FileWriter("receipts//" + "log.txt", true));  //clears file every time
-                            output.append("receipt-" + hulingOras + "\n");
+                            output.append("receipt-" + hulingOras + "/" + LUser + "\n");
                             output.close();
                     }catch(IOException ek){
 
                     }
+                    cart.getDataVector().removeAllElements();
+                    LSTmovies.repaint(); 
+                    System.out.println(LUser);
                     Receipt.setVisible(true);
                 }
                 
@@ -439,17 +443,51 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     );
         Cashier.add(Sum);
         Sum.setBounds(1050,580,80,30);
-        
+
+
        
-        Admin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        Admin.setSize(1200, 700);
         Admin.setLocationRelativeTo(null);
+        JButton prodEdit = new JButton("Product Edit");
+        JButton accManager = new JButton("Account Manager");
+        JButton transLog = new JButton("Transaction Log");
         Admin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Admin.setLayout(null);
         Admin.setTitle("Admin");
+        Admin.add(prodEdit);
+        prodEdit.setBounds(130, 120, 300, 300);
+        prodEdit.addActionListener(new ActionListener(){   /// Edit Products
+            public void actionPerformed(ActionEvent e){
+
+
+
+            }
+        });
+        Admin.add(accManager);
+        accManager.setBounds(450, 120, 300, 300);
+        accManager.addActionListener(new ActionListener(){  /// Account Add/Remove/Edit
+            public void actionPerformed(ActionEvent e){
+                
+
+
+            }
+        });
+        Admin.add(transLog);
+        transLog.setBounds(770, 120, 300, 300);
+        transLog.addActionListener(new ActionListener(){ /// Transaction Logs
+            public void actionPerformed(ActionEvent e){
+
+
+
+            }
+        });
+        
     } //END OF CONSTRUCTOR
     
     
     public void actionPerformed(ActionEvent e){
+
+
 
     }
     
