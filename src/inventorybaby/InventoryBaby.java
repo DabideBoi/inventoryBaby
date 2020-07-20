@@ -25,7 +25,11 @@ import java.util.*;
 
 /**
  *
- * @author David Yabis
+<<<<<<< HEAD
+ * @author David Yabis //Valorantx2x2
+=======
+ * @author David Yabis //Valorant
+>>>>>>> parent of adc23b6... Valorant x2
  */
  
 public class InventoryBaby extends JFrame implements ItemListener, ActionListener{
@@ -66,13 +70,15 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     int listCount = 0, qtyItem[] = new int[9], editConfirmation = 0, tPrice = 0;
     String imageItem[] = new String[9]; 
     ArrayList<String> cartList = new ArrayList<String>();
+    ArrayList<String> Store = new ArrayList<>(); 
     JLabel Sum = new JLabel("Php 0");
     Double cartSum = 0.00, receiptSum = 0.00;
-    String movie;
-    int selectedIndex= itemArea.getSelectedIndex();
+    String movie = (String) CMBgenre.getSelectedItem();
+    String[] lineArray;
+    int selectedIndex = itemArea.getSelectedIndex();
     JLabel imgDisplay = new JLabel();
     JTextArea ItemDescription = new JTextArea();
-
+//
 
     JFrame Admin = new JFrame();
     
@@ -454,15 +460,19 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         Admin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Admin.setLayout(null);
         Admin.setTitle("Admin");
+       
+       //Buttons
         Admin.add(prodEdit);
         prodEdit.setBounds(130, 120, 300, 300);
         prodEdit.addActionListener(new ActionListener(){   /// Edit Products
             public void actionPerformed(ActionEvent e){
-
-
-
-            }
+            	
+            	EditProduct edit = new EditProduct();
+            	edit.setVisible(true); 
+			
+            }   
         });
+        
         Admin.add(accManager);
         accManager.setBounds(450, 120, 300, 300);
         accManager.addActionListener(new ActionListener(){  /// Account Add/Remove/Edit
@@ -477,19 +487,189 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         transLog.addActionListener(new ActionListener(){ /// Transaction Logs
             public void actionPerformed(ActionEvent e){
 
-
-
             }
         });
         
     } //END OF CONSTRUCTOR
     
+    	 public void actionPerformed(ActionEvent e){
+
+
+
+    	}   
     
-    public void actionPerformed(ActionEvent e){
+    
+    // Classes
+ class EditProduct extends JFrame {
+ 	
+        JComboBox<String> CMBgenre = new JComboBox<String>();	
+    	//Product Selection
+		DefaultListModel<String> itemList = new DefaultListModel<>();
+		JList itemArea = new JList(itemList);
+    	//Edit Button 
+    	JButton Edit = new JButton("Edit");
+		//TextFields
+    	JTextField Product = new JTextField();	
+        JTextField ID = new JTextField();		
+	    JTextField Stock = new JTextField();		
+		JTextField Price = new JTextField();
+		//JPanel
+		JPanel EditPanel = new JPanel();	
+							
+			public EditProduct(){	//Constructor
+				super("EditProduct");
+				setSize(1200, 900);
+				setLocationRelativeTo(null);
+				setResizable(false);
+				setVisible(true);
+						
+				Container ProdEdit = getContentPane();
+				ProdEdit.setLayout(null);
+				
+		  		ProdEdit.add(CMBgenre);
+       	 		CMBgenre.setBounds(500,60,250,50);
+       	 		CMBgenre.addActionListener(new ActionListener(){ //Genre
+           		 public void actionPerformed(ActionEvent e){
+                		movie = (String) CMBgenre.getSelectedItem();
+               		 selectedIndex= 0;
+	    				try {
+                  		  ProductReader("products//" + movie + ".txt");	
+	    				} catch (FileNotFoundException x){
+	    					JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
+           		     }
+          		  }
+    		    });
+      		    CMBgenre.addItem("Action");
+     		    CMBgenre.addItem("Adventure");
+       		    CMBgenre.addItem("Comedy");
+   		     	CMBgenre.addItem("Romance");
+     	    	CMBgenre.addItem("Sci-Fi");	
+     	    		
+     	    	ProdEdit.add(itemArea);	
+     	    	itemArea.setBounds(170,160,890,300);
+     	    	itemArea.setFont(new Font("Arial",0,22));
+     	    	
+     	    			//Edit Button
+     	    	Edit.setBounds(300,230,300,50); 
+     	    	Edit.addActionListener(new ActionListener(){
+     	    		public void actionPerformed(ActionEvent e){
+     	    			movie = (String) CMBgenre.getSelectedItem();
+	    				try {
+                  		  tagaEditNgFile("products//"+ movie +".txt");
+	    				} catch (FileNotFoundException x){
+	    					JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
+	    				}	
+	    				try{
+	    			  	ProductReader("products//" + movie +".txt");
+	    				} catch(FileNotFoundException x){
+	    				  JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
+	    				}			
+     	  	  } 
+     	   
+     	    	});	
+     	    	
+     	    	//Edit Panel
+     	    	ProdEdit.add(EditPanel);
+     	     	EditPanel.setBounds(170,500,890,300);	
+     	    	EditPanel.setLayout(null);
+     	    	EditPanel.setOpaque(true);
+     	    	EditPanel.setBackground(Color.white);
+     	    	EditPanel.add(Edit); 
+     	    	EditPanel.add(Product); Product.setBounds(250,30,400,50); 	Product.setHorizontalAlignment(JTextField.CENTER);	Product.setEditable(false);
+     	    	EditPanel.add(ID);	ID.setBounds(40,130,200,30); 	ID.setHorizontalAlignment(JTextField.CENTER); ID.setEditable(false);
+     	    	EditPanel.add(Stock);	Stock.setBounds( 350,130,200,30);	 Stock.setHorizontalAlignment(JTextField.CENTER);
+     	    	EditPanel.add(Price); Price.setBounds(660,130,200,30); 	Price.setHorizontalAlignment(JTextField.CENTER);
+     
+     	    	//List Selection
+	    		 itemArea.addListSelectionListener(new ListSelectionListener(){
+            		public void valueChanged(ListSelectionEvent e) {
+                		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+               		if(e.getValueIsAdjusting()){
+               			selectedIndex = itemArea.getSelectedIndex();	      
+               		 try{
+               
+                            		ID.setText("" + idItem[selectedIndex] + "\n");
+                            		Product.setText("" + nameItem[selectedIndex]+ "\n");
+                            		Price.setText("" + priceItem[selectedIndex]+ "\n");
+                            		Stock.setText("" + qtyItem[selectedIndex]+ "\n");
+                   		 }catch(Exception v){
+                    
+                   		 }
+                	}    
+              }
+        });		
+        	
+     	    				
+			}// EndOf Constructor	
+	
+		/////////////////Classes for Edit Product////////////////////////////
+		
+		//Product Details Editor
+	 	public void tagaEditNgFile(String txt) throws FileNotFoundException{
+    	//getText() of JTextFields
+	   	String userID= ID.getText();
+	    String editstock = Stock.getText();
+	    String editprice = Price.getText();
+	   
+	    ArrayList<String> Store = new ArrayList<>(); 
+	 	//FILE READER  
+	    try{
+	    	try {
+	    		Store.clear();
+	    		Scanner read = new Scanner (new FileReader(txt));	
+	    		String line;
+	    		String[] lineArray;
+	    		while((line = read.nextLine()) != null){	
+					lineArray=line.split("/");
+					if(lineArray[0].equals(userID)) {
+						Store.add(lineArray[0]+"/"+ nameItem[selectedIndex] +"/"+editstock+"/"+ editprice+"");   
+	    			}else{
+	    				Store.add(line);
+	    			}
+	    		}	
+	   		 read.close();
+	    	}catch(Exception ex){	
+	    	}
+	   		}catch(Exception ex){	   		 				
+	   	 }
+	   	 //PRINT WRITER
+	   	try{	
+	  		try{
+	   		PrintWriter pr = new PrintWriter(txt);	
+	   			for(String str : Store){
+	   				pr.println(str);
+	   			}
+	   		Store.clear();
+	   		pr.close();
+	   		}catch(Exception ex){				
+	   		}
+	  	}catch(Exception ex){	    				
+	   	}		
+   	}	
+		
+		//Product Reader
+		public void ProductReader(String txt) throws FileNotFoundException{
+        listCount = 0;
+        itemList.removeAllElements();
+        try{
+            Scanner input = new Scanner(new FileReader(txt));
+            while(input.hasNextLine()){
+                String line = input.nextLine(); String[] lineArr = line.split("/");
+                idItem[listCount] = lineArr[0]; //String
+                //imageItem[listCount] = input.next();
+                nameItem[listCount] = lineArr[1]; //String 
+                qtyItem[listCount] = Integer.parseInt(lineArr[2]); //Integer
+                priceItem[listCount] = Double.parseDouble(lineArr[3]); //Double;
+                itemList.addElement(String.format("%-20s",idItem[listCount])+ " " + String.format("%-20s",qtyItem[listCount])+ " " + String.format("%-40s",df.format(priceItem[listCount])) + String.format("%-10s",nameItem[listCount]));
+                listCount++;
+            }
+            input.close();
 
-
-
-    }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }		
+    }//End Of Class Edit Product
     
     public void UserScanner(String Text){
         if(rCash.isSelected()){
