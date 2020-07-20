@@ -56,8 +56,19 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         JButton ReceiptClose = new JButton("Close");
     String[] cols = {"ID Code", "Amount", "Price", "Name"};
     String[] sel = new String[4];
-    DefaultTableModel cart = new DefaultTableModel(cols, 0);
+    DefaultTableModel cart = new DefaultTableModel(0,4){
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        public String getColumnName(int column) {
+            return cols[column];
+        }
+    };
     JTable LSTmovies = new JTable(cart);
+    JScrollPane cartScroll = new JScrollPane(LSTmovies);
     JComboBox<String> CMBgenre = new JComboBox<String>();
     String genre[] ={"Action.txt", "Adventure.txt", "Comedy.txt", "Romance.txt", "Sci-Fi.txt"};
     ArrayList<String> category = new ArrayList<String>();
@@ -197,8 +208,8 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         
 
 
-        Cashier.add(LSTmovies); // Cart
-        LSTmovies.setBounds(650,160,470,400);
+        Cashier.add(cartScroll); // Cart
+        cartScroll.setBounds(650,160,470,400);
         //LSTmovies.setModel(cart);
         Cashier.add(itemArea); // Movie List
         itemArea.addListSelectionListener(new ListSelectionListener(){
@@ -239,7 +250,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         logout.setBounds(1050,5,120,30);
         logout.addActionListener(new ActionListener(){ //LogOut
             public void actionPerformed(ActionEvent e){
-	            Cashier.dispose();
+                Cashier.dispose();
 	            textUser.setText("");
 	            textPassword.setText("");
                 cart.getDataVector().removeAllElements();
@@ -457,11 +468,23 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         JButton prodEdit = new JButton("Product Edit");
         JButton accManager = new JButton("Account Manager");
         JButton transLog = new JButton("Transaction Log");
+        JButton logoutAdmin = new JButton("Logout");
         Admin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Admin.setLayout(null);
         Admin.setTitle("Admin");
        
        //Buttons
+        Admin.add(logoutAdmin);
+        logoutAdmin.setBounds(1050,5,120,30);
+        logoutAdmin.addActionListener(new ActionListener(){ //LogOut
+            public void actionPerformed(ActionEvent e){
+                Admin.dispose();
+	            textUser.setText("");
+	            textPassword.setText("");
+                Login.setVisible(true);
+                
+            }
+        });
         Admin.add(prodEdit);
         prodEdit.setBounds(130, 120, 300, 300);
         prodEdit.addActionListener(new ActionListener(){   /// Edit Products
@@ -472,14 +495,63 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
 			
             }   
         });
-        
         Admin.add(accManager);
         accManager.setBounds(450, 120, 300, 300);
+        JFrame accManagerFrame = new JFrame();
+        JButton accManagerBack = new JButton("Back");
+        String[] header = {"Username", "Access"};
+        DefaultTableModel accManagerTableModel = new DefaultTableModel(0,2){
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+            public String getColumnName(int column) {
+                return header[column];
+            }
+        };
+        JTable accManagerTable = new JTable(accManagerTableModel);
+        JScrollPane accManagerTableScroll = new JScrollPane(accManagerTable);
+        accManagerFrame.setLayout(null);
+        accManagerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        accManagerFrame.setSize(1200,700);
+        accManagerFrame.setLocationRelativeTo(null);
+        accManagerFrame.add(accManagerBack);
+        //Back Button
+        accManagerBack.setBounds(25,5,120,30);
+        accManagerBack.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                accManagerFrame.dispose();
+                Admin.setVisible(true);
+            }
+        });
+        accManagerFrame.add(accManagerTableScroll);
+        accManagerTableScroll.setBounds(50,160,500,200);
+        //accManagerTable.setEditable(false);
         accManager.addActionListener(new ActionListener(){  /// Account Add/Remove/Edit
             public void actionPerformed(ActionEvent e){
-                
-
-
+                Admin.dispose();
+                accManagerFrame.setVisible(true);
+                accManagerTableModel.getDataVector().removeAllElements();
+                String[] accPassword = new String[100];
+                String[] accName = new String[100];
+                listCount = 0;
+                try{
+                    Scanner input = new Scanner(new FileReader("accounts.txt"));
+                    while(input.hasNextLine()){
+                        String line = input.nextLine(); String[] lineArr = line.split(" ");
+                        accName[listCount] = lineArr[0];
+                        accPassword[listCount] = lineArr[2];
+                        Object[] accManagerRow = {accName[listCount], accPassword[listCount]};
+                        accManagerTableModel.addRow(accManagerRow);
+                        listCount++;
+                    }
+                    input.close();
+        
+                    } catch (FileNotFoundException x) {
+                        x.printStackTrace();
+                    }
             }
         });
         Admin.add(transLog);
