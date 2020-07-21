@@ -605,9 +605,52 @@ public class InventoryBaby extends JFrame implements ItemListener{
                 //code to add to table and to text file
             }
         });
+<<<<<<< Updated upstream
         accManagerFrame.add(removeAccount);
         removeAccount.setBounds(700, 300,300, 200);
         removeAccount.addActionListener(new ActionListener(){  // Remove Button
+=======
+     
+        //Transaction Log
+        Admin.add(transLog);
+        transLog.setBounds(770, 120, 300, 300);
+        //Initialization
+        JLayeredPane layers = new JLayeredPane();
+        JFrame transLogFrame = new JFrame();
+        JButton transLogBack = new JButton("Back");
+        JButton transLogLoad = new JButton("Load");
+        DefaultTableModel model = new DefaultTableModel();
+        String[] columns = {"Receipt", "User"};
+        JTable transLogTable = new JTable(model); //will be using itemList as DefaultListModel
+        JScrollPane transLogTablePanel = new JScrollPane(transLogTable);
+        JTextArea transLogTextArea = new JTextArea();
+        //JTable
+        model.setColumnIdentifiers(columns);
+        transLogTable.setPreferredSize(new Dimension(550,440));
+        transLogTable.setFillsViewportHeight(true);//set visible 
+        transLogTablePanel.setViewportView(transLogTable);
+        //JFrame
+        transLogFrame.setLayout(null);
+        transLogFrame.add(layers);
+        transLogFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        transLogFrame.setSize(1200,700);
+        transLogFrame.setLocationRelativeTo(null);
+        
+        //Layers
+        layers.setLayout(null);
+        layers.setSize(1200,700);
+        layers.add(transLogBack, new Integer(1));
+        layers.add(transLogTextArea, new Integer(2));
+        layers.add(transLogTablePanel, new Integer(3));
+        layers.add(transLogLoad, new Integer(4));
+        transLogLoad.setBounds(50+55,5,120,30); //Load Button
+        transLogTextArea.setBounds(50+500,100,500,200); //JTextArea
+        //transLogTable.setBounds(50,100,500,200); 
+        transLogTablePanel.setBounds(50,100+100,500,200); //Table
+        //Back Button
+        transLogBack.setBounds(25,5,120,30);
+        transLogBack.addActionListener(new ActionListener(){
+>>>>>>> Stashed changes
             public void actionPerformed(ActionEvent e){
                 Object[] choices = {"Ok", "Cancel"};
                 Object defaultChoice = choices[1];
@@ -644,6 +687,7 @@ public class InventoryBaby extends JFrame implements ItemListener{
         accManagerTableScroll.setBounds(50,160,500,200);
         accManager.addActionListener(new ActionListener(){  /// Account Add/Remove/Edit
             public void actionPerformed(ActionEvent e){
+<<<<<<< Updated upstream
                 Admin.dispose();
                 accManagerFrame.setVisible(true);
                 accManagerTableModel.getDataVector().removeAllElements();
@@ -658,6 +702,52 @@ public class InventoryBaby extends JFrame implements ItemListener{
             }
         });
         
+=======
+				Admin.dispose();
+				transLogFrame.setVisible(true);
+				
+				//FileReader for logs
+				itemList.removeAllElements();
+				try{
+					Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\log.txt"));
+					while(input.hasNextLine()){
+						String line = input.nextLine(); 
+						String[] lineArr = line.split("/");
+						System.out.println(lineArr[0] + " --- " + lineArr[1]);
+	                	model.addRow(lineArr);
+					}		
+				} catch (Exception ex){
+					System.out.println(ex);
+				}
+            }
+        });
+        transLogLoad.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		try{
+        			int i = 0;
+        			Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\" + transLogTable.getValueAt(transLogTable.getSelectedRow(),0) + ".txt"));
+					while(i <= 100){
+						String line = input.nextLine(); 
+						transLogTextArea.append(line);
+						i++;
+					}	
+        		} catch (Exception ex){
+        			System.out.println(ex + "\n" + transLogTable.getValueAt(transLogTable.getSelectedRow(),0));
+        		}
+        			 
+        	}
+        });
+        
+        /*
+        model.addTableModelListener(new TableModelListener(){
+        	public void actionPerformed(ActionEvent e){
+        		
+        	}
+        });
+        */
+        
+     
+>>>>>>> Stashed changes
     } //END OF CONSTRUCTOR
     // Classes
 class EditProduct extends JFrame {
