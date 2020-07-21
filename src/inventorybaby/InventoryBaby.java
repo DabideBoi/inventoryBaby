@@ -32,7 +32,7 @@ import java.util.*;
 >>>>>>> parent of adc23b6... Valorant x2
  */
  
-public class InventoryBaby extends JFrame implements ItemListener, ActionListener{
+public class InventoryBaby extends JFrame implements ItemListener{
     /**
      *
      */
@@ -499,6 +499,8 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         accManager.setBounds(450, 120, 300, 300);
         JFrame accManagerFrame = new JFrame();
         JButton accManagerBack = new JButton("Back");
+        JButton addAccount = new JButton("Create Account");
+        JButton removeAccount = new JButton("Remove Account");
         String[] header = {"Username", "Access"};
         DefaultTableModel accManagerTableModel = new DefaultTableModel(0,2){
 
@@ -517,8 +519,8 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         accManagerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         accManagerFrame.setSize(1200,700);
         accManagerFrame.setLocationRelativeTo(null);
-        accManagerFrame.add(accManagerBack);
         //Back Button
+        accManagerFrame.add(accManagerBack);
         accManagerBack.setBounds(25,5,120,30);
         accManagerBack.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -526,9 +528,99 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 Admin.setVisible(true);
             }
         });
+        //Add Button
+        accManagerFrame.add(addAccount);
+        addAccount.setBounds(700,50 ,300, 200);
+        addAccount.addActionListener(new ActionListener(){  // Remove Button
+            public void actionPerformed(ActionEvent e){
+                Object[] choices = {"Ok", "Cancel"};
+                Object defaultChoice = choices[1];
+                String newUser = JOptionPane.showInputDialog(null, "Enter new Username");
+                if (newUser == null){
+                    return;
+                 }
+                JPasswordField newPass = new JPasswordField();
+                JPasswordField confirmPass = new JPasswordField();
+                int whileCount = 0;
+                int NewPass;
+                String pass1 = "  ", pass2 = " ";
+                while (!pass1.equals(pass2)){
+                    if(whileCount == 0)
+                        NewPass = JOptionPane.showOptionDialog(null, newPass, "Enter Password", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    else
+                        NewPass = JOptionPane.showOptionDialog(null, newPass, "Retry Enter Password", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    if (NewPass == JOptionPane.YES_OPTION){}
+                    else if (NewPass == JOptionPane.NO_OPTION)
+                        break;
+                    else
+                        break;
+                        int ConfirmPass = JOptionPane.showOptionDialog(null, confirmPass, "Confirm Password", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    pass1 = new String(newPass.getPassword());
+                    pass2 = new String(confirmPass.getPassword());
+                    newPass.setText(""); confirmPass.setText("");
+                    System.out.println(pass1 + ' ' + pass2);
+                    if (ConfirmPass == JOptionPane.YES_OPTION){}
+                    else if (ConfirmPass == JOptionPane.NO_OPTION)
+                        break;
+                    else
+                        break;
+                    whileCount++;
+                    String AdminPass = " ";
+                    int WhileCount = 0;
+                    JPasswordField PassKey = new JPasswordField();
+                    int yoinkydoink;
+                    while(!AdminPass.equals(LPass)){
+                        if(WhileCount == 0)
+                            yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Enter your Password to confirm new Account", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                        else
+                            yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Wrong Password, Please Retry", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    AdminPass = new String(PassKey.getPassword());
+                    PassKey.setText("");
+                    WhileCount++;
+                    }
+                }
+               
+
+                //code to add to table and to text file
+            }
+        });
+        accManagerFrame.add(removeAccount);
+        removeAccount.setBounds(700, 300,300, 200);
+        removeAccount.addActionListener(new ActionListener(){  // Remove Button
+            public void actionPerformed(ActionEvent e){
+                Object[] choices = {"Ok", "Cancel"};
+                Object defaultChoice = choices[1];
+                String AdminPass = " ";
+                int WhileCount = 0;
+                JPasswordField PassKey = new JPasswordField();
+                int yoinkydoink;
+                while(!AdminPass.equals(LPass)){
+                if(WhileCount == 0)
+                    yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Enter your Password to confirm remove Account", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                else
+                    yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Wrong Password, Please Retry", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+
+                    if (yoinkydoink == JOptionPane.YES_OPTION){}
+                    else if (yoinkydoink == JOptionPane.NO_OPTION)
+                        break;
+                    else
+                        break;
+                AdminPass = new String(PassKey.getPassword());
+                PassKey.setText("");
+                WhileCount++;
+                }
+                int selectedRowIndex = accManagerTable.getSelectedRow(); 
+                 for( int i = accManagerTableModel.getRowCount() - 1; i >= 0; --i )
+                {   
+                if(selectedRowIndex == i){
+                    accManagerTableModel.removeRow(selectedRowIndex);
+                }
+            }
+
+            }
+        });
         accManagerFrame.add(accManagerTableScroll);
         accManagerTableScroll.setBounds(50,160,500,200);
-        //accManagerTable.setEditable(false);
         accManager.addActionListener(new ActionListener(){  /// Account Add/Remove/Edit
             public void actionPerformed(ActionEvent e){
                 Admin.dispose();
@@ -558,19 +650,11 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         transLog.setBounds(770, 120, 300, 300);
         transLog.addActionListener(new ActionListener(){ /// Transaction Logs
             public void actionPerformed(ActionEvent e){
-
+                
             }
         });
         
     } //END OF CONSTRUCTOR
-    
-    	 public void actionPerformed(ActionEvent e){
-
-
-
-    	}   
-    
-    
     // Classes
  class EditProduct extends JFrame {
  	
@@ -850,16 +934,6 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 e.printStackTrace();
             }
         }
-   /* public void ProductWriter(String textFile, int quantTxt, int quantInput){
-            try{
-            File file = new File(textFile);
-            file.createNewFile();
-            FileWriter fw = new FileWriter(file);
-            
-            }catch(IOException ex){
-
-            }
-    }*/
     public static boolean isEmpty(JTable jTable) {
         if (jTable != null && jTable.getModel() != null) {
             return jTable.getModel().getRowCount()<=0?true:false;

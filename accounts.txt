@@ -2,3 +2,4 @@
 1 1 admin
 Dabs 12345678 cashier
 Babs 12345678 admin
+Remove_Me_Pls_Senpai 12345678 admin
