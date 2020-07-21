@@ -508,16 +508,57 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                     }
             }
         });
+     
+        //Transaction Log
         Admin.add(transLog);
         transLog.setBounds(770, 120, 300, 300);
-        transLog.addActionListener(new ActionListener(){ /// Transaction Logs
+        //Initialization
+        JFrame transLogFrame = new JFrame();
+        JButton transLogBack = new JButton("Back");
+        DefaultTableModel model = new DefaultTableModel();
+        JTable transLogTable = new JTable(model); //will be using itemList as DefaultListModel
+        JTextArea transLogTextArea = new JTextArea();
+        //JFrame
+        transLogFrame.setLayout(null);
+        transLogFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        transLogFrame.setSize(1200,700);
+        transLogFrame.setLocationRelativeTo(null);
+        transLogFrame.add(transLogBack);
+        transLogFrame.add(transLogTable);
+        transLogTable.setBounds(50,160,500,200); //JList
+        //Back Button
+        transLogBack.setBounds(25,5,120,30);
+        transLogBack.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-
-
-
+                transLogFrame.dispose();
+                Admin.setVisible(true);
             }
         });
-        
+        transLog.addActionListener(new ActionListener(){ /// Transaction Logs
+            public void actionPerformed(ActionEvent e){
+				Admin.dispose();
+				transLogFrame.setVisible(true);
+				
+				//FileReader for logs
+				itemList.removeAllElements();
+				try{
+					Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\log.txt"));
+					while(input.hasNextLine()){
+						String line = input.nextLine(); 
+						String[] lineArr = line.split("/");
+	                	itemList.addElement();
+				}		
+				} catch (Exception ex){
+					System.out.println(ex);
+				}
+            }
+        });
+        transL.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		
+        	}
+        });
+     
     } //END OF CONSTRUCTOR
     
     
