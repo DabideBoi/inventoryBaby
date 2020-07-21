@@ -508,6 +508,14 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                     }
             }
         });
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+        accManagerFrame.add(removeAccount);
+        removeAccount.setBounds(700, 300,300, 200);
+        removeAccount.addActionListener(new ActionListener(){  // Remove Button
+        
+>>>>>>> Stashed changes
      
         //Transaction Log
         Admin.add(transLog);
@@ -528,6 +536,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         transLogTable.setBounds(50,160,500,200); //JList
         //Back Button
         transLogBack.setBounds(25,5,120,30);
+<<<<<<< Updated upstream
         transLogBack.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 transLogFrame.dispose();
@@ -536,6 +545,14 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         });
         transLog.addActionListener(new ActionListener(){ /// Transaction Logs
             public void actionPerformed(ActionEvent e){
+=======
+        transLogBack.addActionListener(new ActionListener({
+            public void actionPerformed(ActionEvent e){
+                //Missing code
+            }
+        });
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 				Admin.dispose();
 				transLogFrame.setVisible(true);
 				
