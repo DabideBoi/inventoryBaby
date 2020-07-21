@@ -25,11 +25,7 @@ import java.util.*;
 
 /**
  *
-<<<<<<< HEAD
- * @author David Yabis //Valorantx2x2
-=======
- * @author David Yabis //Valorant
->>>>>>> parent of adc23b6... Valorant x2
+ * bokkk
  */
  
 public class InventoryBaby extends JFrame implements ItemListener{
@@ -93,6 +89,25 @@ public class InventoryBaby extends JFrame implements ItemListener{
 
     JFrame Admin = new JFrame();
     
+    JFrame accManagerFrame = new JFrame();
+    JButton accManagerBack = new JButton("Back");
+    JButton addAccount = new JButton("Create Account");
+    JButton removeAccount = new JButton("Remove Account");
+    String[] header = {"Username", "Access"};
+    DefaultTableModel accManagerTableModel = new DefaultTableModel(0,2){
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        public String getColumnName(int column) {
+            return header[column];
+        }
+    };
+    JTable accManagerTable = new JTable(accManagerTableModel);
+    JScrollPane accManagerTableScroll = new JScrollPane(accManagerTable);
+
     public InventoryBaby(){
         Login.setSize(400, 600); 
         Login.setLocationRelativeTo(null);
@@ -497,24 +512,6 @@ public class InventoryBaby extends JFrame implements ItemListener{
         });
         Admin.add(accManager);
         accManager.setBounds(450, 120, 300, 300);
-        JFrame accManagerFrame = new JFrame();
-        JButton accManagerBack = new JButton("Back");
-        JButton addAccount = new JButton("Create Account");
-        JButton removeAccount = new JButton("Remove Account");
-        String[] header = {"Username", "Access"};
-        DefaultTableModel accManagerTableModel = new DefaultTableModel(0,2){
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-
-            public String getColumnName(int column) {
-                return header[column];
-            }
-        };
-        JTable accManagerTable = new JTable(accManagerTableModel);
-        JScrollPane accManagerTableScroll = new JScrollPane(accManagerTable);
         accManagerFrame.setLayout(null);
         accManagerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         accManagerFrame.setSize(1200,700);
@@ -577,6 +574,26 @@ public class InventoryBaby extends JFrame implements ItemListener{
                     AdminPass = new String(PassKey.getPassword());
                     PassKey.setText("");
                     WhileCount++;
+                    String[] accessChoice = {"Admin", "Cashier"};
+                    String access = " ";
+                    int pogiAko = JOptionPane.showOptionDialog(null, "Choose Type of Access", "Access Type", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, accessChoice, defaultChoice);
+                    if (pogiAko == JOptionPane.YES_OPTION)
+                        access = "admin";
+                    else if (pogiAko == JOptionPane.NO_OPTION)
+                        access = "cashier";
+                    try
+                        {
+                            
+                            String zoinks = newUser.replaceAll("\\s","_");
+                            Writer output;
+                            output = new BufferedWriter(new FileWriter("accounts.txt", true));  //clears file every time
+                            output.append(zoinks + " " + pass2 + " " + access + "\n");
+                            output.close();
+                    }catch(IOException ek){
+
+                    }
+                    accManagerTableModel.getDataVector().removeAllElements();
+                    fileToTable();
                     }
                 }
                
@@ -626,24 +643,7 @@ public class InventoryBaby extends JFrame implements ItemListener{
                 Admin.dispose();
                 accManagerFrame.setVisible(true);
                 accManagerTableModel.getDataVector().removeAllElements();
-                String[] accPassword = new String[100];
-                String[] accName = new String[100];
-                listCount = 0;
-                try{
-                    Scanner input = new Scanner(new FileReader("accounts.txt"));
-                    while(input.hasNextLine()){
-                        String line = input.nextLine(); String[] lineArr = line.split(" ");
-                        accName[listCount] = lineArr[0];
-                        accPassword[listCount] = lineArr[2];
-                        Object[] accManagerRow = {accName[listCount], accPassword[listCount]};
-                        accManagerTableModel.addRow(accManagerRow);
-                        listCount++;
-                    }
-                    input.close();
-        
-                    } catch (FileNotFoundException x) {
-                        x.printStackTrace();
-                    }
+                fileToTable();
             }
         });
         Admin.add(transLog);
@@ -949,7 +949,26 @@ public class InventoryBaby extends JFrame implements ItemListener{
             accType = "admin";
         }
     }
-    
+    public void fileToTable(){
+        String[] accPassword = new String[100];
+                String[] accName = new String[100];
+                listCount = 0;
+                try{
+                    Scanner input = new Scanner(new FileReader("accounts.txt"));
+                    while(input.hasNextLine()){
+                        String line = input.nextLine(); String[] lineArr = line.split(" ");
+                        accName[listCount] = lineArr[0];
+                        accPassword[listCount] = lineArr[2];
+                        Object[] accManagerRow = {accName[listCount], accPassword[listCount]};
+                        accManagerTableModel.addRow(accManagerRow);
+                        listCount++;
+                    }
+                    input.close();
+        
+                    } catch (FileNotFoundException x) {
+                        x.printStackTrace();
+                    }
+    }
     public static void main(String[] args) {
         InventoryBaby bonk = new InventoryBaby();
     }

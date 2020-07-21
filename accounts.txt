@@ -3,3 +3,5 @@
 Dabs 12345678 cashier
 Babs 12345678 admin
 Remove_Me_Pls_Senpai 12345678 admin
+yo_yo 123 admin
+yo_boi 123 cashier
