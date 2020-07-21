@@ -25,10 +25,10 @@ import java.util.*;
 
 /**
  *
- * @author David Yabis
+ * bokkk
  */
  
-public class InventoryBaby extends JFrame implements ItemListener, ActionListener{
+public class InventoryBaby extends JFrame implements ItemListener{
     /**
      *
      */
@@ -52,8 +52,19 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         JButton ReceiptClose = new JButton("Close");
     String[] cols = {"ID Code", "Amount", "Price", "Name"};
     String[] sel = new String[4];
-    DefaultTableModel cart = new DefaultTableModel(cols, 0);
+    DefaultTableModel cart = new DefaultTableModel(0,4){
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        public String getColumnName(int column) {
+            return cols[column];
+        }
+    };
     JTable LSTmovies = new JTable(cart);
+    JScrollPane cartScroll = new JScrollPane(LSTmovies);
     JComboBox<String> CMBgenre = new JComboBox<String>();
     String genre[] ={"Action.txt", "Adventure.txt", "Comedy.txt", "Romance.txt", "Sci-Fi.txt"};
     ArrayList<String> category = new ArrayList<String>();
@@ -66,16 +77,37 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     int listCount = 0, qtyItem[] = new int[9], editConfirmation = 0, tPrice = 0;
     String imageItem[] = new String[9]; 
     ArrayList<String> cartList = new ArrayList<String>();
+    ArrayList<String> Store = new ArrayList<>(); 
     JLabel Sum = new JLabel("Php 0");
     Double cartSum = 0.00, receiptSum = 0.00;
-    String movie;
-    int selectedIndex= itemArea.getSelectedIndex();
+    String movie = (String) CMBgenre.getSelectedItem();
+    String[] lineArray;
+    int selectedIndex = itemArea.getSelectedIndex();
     JLabel imgDisplay = new JLabel();
     JTextArea ItemDescription = new JTextArea();
-
+//
 
     JFrame Admin = new JFrame();
     
+    JFrame accManagerFrame = new JFrame();
+    JButton accManagerBack = new JButton("Back");
+    JButton addAccount = new JButton("Create Account");
+    JButton removeAccount = new JButton("Remove Account");
+    String[] header = {"Username", "Access"};
+    DefaultTableModel accManagerTableModel = new DefaultTableModel(0,2){
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        public String getColumnName(int column) {
+            return header[column];
+        }
+    };
+    JTable accManagerTable = new JTable(accManagerTableModel);
+    JScrollPane accManagerTableScroll = new JScrollPane(accManagerTable);
+
     public InventoryBaby(){
         Login.setSize(400, 600); 
         Login.setLocationRelativeTo(null);
@@ -191,8 +223,8 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         
 
 
-        Cashier.add(LSTmovies); // Cart
-        LSTmovies.setBounds(650,160,470,400);
+        Cashier.add(cartScroll); // Cart
+        cartScroll.setBounds(650,160,470,400);
         //LSTmovies.setModel(cart);
         Cashier.add(itemArea); // Movie List
         itemArea.addListSelectionListener(new ListSelectionListener(){
@@ -233,7 +265,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         logout.setBounds(1050,5,120,30);
         logout.addActionListener(new ActionListener(){ //LogOut
             public void actionPerformed(ActionEvent e){
-	            Cashier.dispose();
+                Cashier.dispose();
 	            textUser.setText("");
 	            textPassword.setText("");
                 cart.getDataVector().removeAllElements();
@@ -445,36 +477,51 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         Sum.setBounds(1050,580,80,30);
 
 
-        
+       
         Admin.setSize(1200, 700);
         Admin.setLocationRelativeTo(null);
         JButton prodEdit = new JButton("Product Edit");
         JButton accManager = new JButton("Account Manager");
         JButton transLog = new JButton("Transaction Log");
+        JButton logoutAdmin = new JButton("Logout");
         Admin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Admin.setLayout(null);
         Admin.setTitle("Admin");
+       
+       //Buttons
+        Admin.add(logoutAdmin);
+        logoutAdmin.setBounds(1050,5,120,30);
+        logoutAdmin.addActionListener(new ActionListener(){ //LogOut
+            public void actionPerformed(ActionEvent e){
+            	editConfirmation = JOptionPane.showConfirmDialog(null,"Do you want to Logout??","Logout",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            	if(editConfirmation == JOptionPane.YES_OPTION){
+            		JOptionPane.showMessageDialog(null,"TARA VALORANT ;)");
+            	}
+                Admin.dispose();
+	            textUser.setText("");
+	            textPassword.setText("");
+                Login.setVisible(true);
+                
+            }
+        });
         Admin.add(prodEdit);
         prodEdit.setBounds(130, 120, 300, 300);
         prodEdit.addActionListener(new ActionListener(){   /// Edit Products
             public void actionPerformed(ActionEvent e){
-
-
-
-            }
+            	
+            	EditProduct edit = new EditProduct();
+            	edit.setVisible(true); 
+			
+            }   
         });
         Admin.add(accManager);
         accManager.setBounds(450, 120, 300, 300);
-        JFrame accManagerFrame = new JFrame();
-        JButton accManagerBack = new JButton("Back");
-        DefaultTableModel accManagerTableModel = new DefaultTableModel(2, 0);
-        JTable accManagerTable = new JTable(accManagerTableModel);
         accManagerFrame.setLayout(null);
         accManagerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         accManagerFrame.setSize(1200,700);
         accManagerFrame.setLocationRelativeTo(null);
-        accManagerFrame.add(accManagerBack);
         //Back Button
+        accManagerFrame.add(accManagerBack);
         accManagerBack.setBounds(25,5,120,30);
         accManagerBack.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -482,50 +529,313 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 Admin.setVisible(true);
             }
         });
-        accManagerFrame.add(accManagerTable);
-        accManagerTable.setBounds(50,160,500,200);
+        //Add Button
+        accManagerFrame.add(addAccount);
+        addAccount.setBounds(700,50 ,300, 200);
+        addAccount.addActionListener(new ActionListener(){  // Remove Button
+            public void actionPerformed(ActionEvent e){
+                Object[] choices = {"Ok", "Cancel"};
+                Object defaultChoice = choices[1];
+                String newUser = JOptionPane.showInputDialog(null, "Enter new Username");
+                if (newUser == null){
+                    return;
+                 }
+                JPasswordField newPass = new JPasswordField();
+                JPasswordField confirmPass = new JPasswordField();
+                int whileCount = 0;
+                int NewPass;
+                String pass1 = "  ", pass2 = " ";
+                while (!pass1.equals(pass2)){
+                    if(whileCount == 0)
+                        NewPass = JOptionPane.showOptionDialog(null, newPass, "Enter Password", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    else
+                        NewPass = JOptionPane.showOptionDialog(null, newPass, "Retry Enter Password", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    if (NewPass == JOptionPane.YES_OPTION){}
+                    else if (NewPass == JOptionPane.NO_OPTION)
+                        break;
+                    else
+                        break;
+                        int ConfirmPass = JOptionPane.showOptionDialog(null, confirmPass, "Confirm Password", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    pass1 = new String(newPass.getPassword());
+                    pass2 = new String(confirmPass.getPassword());
+                    newPass.setText(""); confirmPass.setText("");
+                    System.out.println(pass1 + ' ' + pass2);
+                    if (ConfirmPass == JOptionPane.YES_OPTION){}
+                    else if (ConfirmPass == JOptionPane.NO_OPTION)
+                        break;
+                    else
+                        break;
+                    whileCount++;
+                    String AdminPass = " ";
+                    int WhileCount = 0;
+                    JPasswordField PassKey = new JPasswordField();
+                    int yoinkydoink;
+                    while(!AdminPass.equals(LPass)){
+                        if(WhileCount == 0)
+                            yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Enter your Password to confirm new Account", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                        else
+                            yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Wrong Password, Please Retry", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                    AdminPass = new String(PassKey.getPassword());
+                    PassKey.setText("");
+                    WhileCount++;
+                    String[] accessChoice = {"Admin", "Cashier"};
+                    String access = " ";
+                    int pogiAko = JOptionPane.showOptionDialog(null, "Choose Type of Access", "Access Type", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, accessChoice, defaultChoice);
+                    if (pogiAko == JOptionPane.YES_OPTION)
+                        access = "admin";
+                    else if (pogiAko == JOptionPane.NO_OPTION)
+                        access = "cashier";
+                    try
+                        {
+                            
+                            String zoinks = newUser.replaceAll("\\s","_");
+                            Writer output;
+                            output = new BufferedWriter(new FileWriter("accounts.txt", true));  //clears file every time
+                            output.append(zoinks + " " + pass2 + " " + access + "\n");
+                            output.close();
+                    }catch(IOException ek){
+
+                    }
+                    accManagerTableModel.getDataVector().removeAllElements();
+                    fileToTable();
+                    }
+                }
+               
+
+                //code to add to table and to text file
+            }
+        });
+        accManagerFrame.add(removeAccount);
+        removeAccount.setBounds(700, 300,300, 200);
+        removeAccount.addActionListener(new ActionListener(){  // Remove Button
+            public void actionPerformed(ActionEvent e){
+                Object[] choices = {"Ok", "Cancel"};
+                Object defaultChoice = choices[1];
+                String AdminPass = " ";
+                int WhileCount = 0;
+                JPasswordField PassKey = new JPasswordField();
+                int yoinkydoink;
+                while(!AdminPass.equals(LPass)){
+                if(WhileCount == 0)
+                    yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Enter your Password to confirm remove Account", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+                else
+                    yoinkydoink = JOptionPane.showOptionDialog(null, PassKey, "Wrong Password, Please Retry", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, defaultChoice);
+
+                    if (yoinkydoink == JOptionPane.YES_OPTION){}
+                    else if (yoinkydoink == JOptionPane.NO_OPTION)
+                        break;
+                    else
+                        break;
+                AdminPass = new String(PassKey.getPassword());
+                PassKey.setText("");
+                WhileCount++;
+                }
+                int selectedRowIndex = accManagerTable.getSelectedRow(); 
+                 for( int i = accManagerTableModel.getRowCount() - 1; i >= 0; --i )
+                {   
+                if(selectedRowIndex == i){
+                    accManagerTableModel.removeRow(selectedRowIndex);
+                }
+            }
+
+            }
+        });
+        accManagerFrame.add(accManagerTableScroll);
+        accManagerTableScroll.setBounds(50,160,500,200);
         accManager.addActionListener(new ActionListener(){  /// Account Add/Remove/Edit
             public void actionPerformed(ActionEvent e){
                 Admin.dispose();
                 accManagerFrame.setVisible(true);
-                String[] accPassword = new String[100];
-                String[] accName = new String[100];
-                listCount = 0;
-                try{
-                    Scanner input = new Scanner(new FileReader("accounts.txt"));
-                    while(input.hasNextLine()){
-                        String line = input.nextLine(); String[] lineArr = line.split(" ");
-                        accName[listCount] = lineArr[0];
-                        accPassword[listCount] = lineArr[2];
-                        Object[] row = {accName[listCount], accPassword[listCount]};
-                        accManagerTableModel.addRow(row);
-                        listCount++;
-                    }
-                    input.close();
-        
-                    } catch (FileNotFoundException x) {
-                        x.printStackTrace();
-                    }
+                accManagerTableModel.getDataVector().removeAllElements();
+                fileToTable();
             }
         });
         Admin.add(transLog);
         transLog.setBounds(770, 120, 300, 300);
         transLog.addActionListener(new ActionListener(){ /// Transaction Logs
             public void actionPerformed(ActionEvent e){
-
-
-
+                
             }
         });
         
     } //END OF CONSTRUCTOR
-    
-    
-    public void actionPerformed(ActionEvent e){
+    // Classes
+class EditProduct extends JFrame {
+ 	
+        JComboBox<String> CMBgenre = new JComboBox<String>();	
+    	//Product Selection
+		DefaultListModel<String> itemList = new DefaultListModel<>();
+		JList itemArea = new JList(itemList);
+    	//Edit Button 
+    	JButton Edit = new JButton("Edit");
+		//TextFields
+    	JTextField Product = new JTextField(30);	
+        JTextField ID = new JTextField(30);		
+	    JTextField Stocks = new JTextField(30);		
+		JTextField Price = new JTextField(30);
+		//JPanel
+		JPanel EditPanel = new JPanel();
+		
+		String movie = (String) CMBgenre.getSelectedItem();		
+		int selectedIndex;					
+			public EditProduct(){	//Constructor
+				super("EditProduct");
+				setSize(1200, 900);
+				setLocationRelativeTo(null);
+				setResizable(false);
+				setVisible(true);
+						
+				Container ProdEdit = getContentPane();
+				ProdEdit.setLayout(null);
+				
+		  		ProdEdit.add(CMBgenre);
+       	 		CMBgenre.setBounds(500,60,250,50);
+       	 		CMBgenre.addActionListener(new ActionListener(){ //Genre
+           		 public void actionPerformed(ActionEvent e){
+                		movie = (String) CMBgenre.getSelectedItem();
+               		 //selectedIndex= 0;
+	    				try {
+                  		  ProductReader("products//" + movie + ".txt");	
+	    				} catch (FileNotFoundException x){
+	    					JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
+           		     }
+          		  }
+    		    });
+      		    CMBgenre.addItem("Action");
+     		    CMBgenre.addItem("Adventure");
+       		    CMBgenre.addItem("Comedy");
+   		     	CMBgenre.addItem("Romance");
+     	    	CMBgenre.addItem("Sci-Fi");	
+     	    		
+     	    	ProdEdit.add(itemArea);	
+     	    	itemArea.setBounds(170,160,890,300);
+     	    	itemArea.setFont(new Font("Arial",0,22));
+     	    	
+     	    			//Edit Button
+     	    	Edit.setBounds(300,230,300,50); 
+     	    	Edit.addActionListener(new ActionListener(){
+     	    		public void actionPerformed(ActionEvent e){
+     	    			movie = (String) CMBgenre.getSelectedItem();
+     	    			try{	 	
+     	    			ProductEditor("products//"+ movie +".txt");
+     	    			}catch(FileNotFoundException | NoSuchElementException x){
+     	    				x.printStackTrace();
+     	    			}
+	    				try{
+	    			  	ProductReader("products//" + movie +".txt");
+	    				} catch(FileNotFoundException | NoSuchElementException x){
+	    				  JOptionPane.showMessageDialog(null, "heywaitaminute\n" + x);
+	    				 	x.printStackTrace(); 
+	    				}	
+	    				
+     	  	  } 
+     	   
+     	    	});	
+     	    	
+     	    	//Edit Panel
+     	    	ProdEdit.add(EditPanel);
+     	     	EditPanel.setBounds(170,500,890,300);	
+     	    	EditPanel.setLayout(null);
+     	    	EditPanel.setOpaque(true);
+     	    	EditPanel.setBackground(Color.white);
+     	    	EditPanel.add(Edit); 
+     	    	EditPanel.add(Product); Product.setBounds(250,30,400,50); 		Product.setEditable(false);
+     	    	EditPanel.add(ID);	ID.setBounds(40,130,200,30);  ID.setEditable(false);
+     	    	EditPanel.add(Stocks);	Stocks.setBounds( 350,130,200,30);
+     	    	EditPanel.add(Price); Price.setBounds(660,130,200,30); 	
+     
+     	    	//List Selection
+	    		 itemArea.addListSelectionListener(new ListSelectionListener(){
+            		public void valueChanged(ListSelectionEvent e) {
+                		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+               		if(e.getValueIsAdjusting()){
+               			selectedIndex = itemArea.getSelectedIndex();	      
+               		 try{
+                            		ID.setText("" + idItem[selectedIndex]);
+                            		Product.setText("" + nameItem[selectedIndex]);
+                            		Price.setText("" + priceItem[selectedIndex]);
+                            		Stocks.setText("" + qtyItem[selectedIndex]);
+                   		 }catch(Exception v){
+                    
+                   		 }
+                	}    
+              }
+        });		
+        	
+     	    				
+			}// EndOf Constructor	
+	
+		/////////////////Classes for Edit Product////////////////////////////
+		
+		//Product Details Editor
+	 	public void ProductEditor(String txt) throws FileNotFoundException{
+    	//getText() of JTextFields
+	   	String user= ID.getText();
+	    String editedstock = Stocks.getText();
+	    String editedprice = Price.getText();
+	   
+	    ArrayList<String> Store = new ArrayList<>(); 
+	 	//FILE READER  
+	    try{
+	    	try {
+	    		Store.clear();
+	    		Scanner read = new Scanner (new FileReader(txt));	
+	    		String line;
+	    		String[] lineArr; 
+	    		while((line = read.nextLine()) !=null){	
+					lineArr=line.split("/");
+					if(lineArr[0].equals(user)) {
+						Store.add(lineArr[0] + "/" + lineArr[1] + "/" + editedstock +"/"+ editedprice + "" );
+						System.out.print("Access");
+						
+	    			}else{
+	    				Store.add(line);
+	    				
+	    			}		
+	    		}	
+	   		 read.close();
+	    	}catch(Exception ex){	
+	    	}
+	   		}catch(Exception ex){	   		 				
+	   	 }
+	   	 //PRINT WRITER
+	   	try{	
+	  		try{
+	   		PrintWriter pr = new PrintWriter(txt);	
+	   			for(String str : Store){
+	   				pr.println(str);
+	   			}
+	   		Store.clear();
+	   		pr.close();
+	   		}catch(Exception ex){				
+	   		}
+	  	}catch(Exception ex){	    				
+	   	}		
+   	}
+		
+		//Product Reader
+		public void ProductReader(String txt) throws FileNotFoundException{
+        listCount = 0;
+        itemList.removeAllElements();
+        try{
+            Scanner input = new Scanner(new FileReader(txt));
+            while(input.hasNextLine()){
+                String line = input.nextLine(); String[] lineArr = line.split("/");
+                idItem[listCount] = lineArr[0]; //String
+                //imageItem[listCount] = input.next();
+                nameItem[listCount] = lineArr[1]; //String 
+                qtyItem[listCount] = Integer.parseInt(lineArr[2]); //Integer
+                priceItem[listCount] = Double.parseDouble(lineArr[3]); //Double;
+                itemList.addElement(String.format("%-20s",idItem[listCount])+ " " + String.format("%-20s",qtyItem[listCount])+ " " + String.format("%-40s",df.format(priceItem[listCount])) + String.format("%-10s",nameItem[listCount]));
+                listCount++;
+            }
+            input.close();
 
-
-
-    }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }		
+    }//End Of Class Edit Product
     
     public void UserScanner(String Text){
         if(rCash.isSelected()){
@@ -634,16 +944,6 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                 e.printStackTrace();
             }
         }
-   /* public void ProductWriter(String textFile, int quantTxt, int quantInput){
-            try{
-            File file = new File(textFile);
-            file.createNewFile();
-            FileWriter fw = new FileWriter(file);
-            
-            }catch(IOException ex){
-
-            }
-    }*/
     public static boolean isEmpty(JTable jTable) {
         if (jTable != null && jTable.getModel() != null) {
             return jTable.getModel().getRowCount()<=0?true:false;
@@ -659,7 +959,26 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             accType = "admin";
         }
     }
-    
+    public void fileToTable(){
+        String[] accPassword = new String[100];
+                String[] accName = new String[100];
+                listCount = 0;
+                try{
+                    Scanner input = new Scanner(new FileReader("accounts.txt"));
+                    while(input.hasNextLine()){
+                        String line = input.nextLine(); String[] lineArr = line.split(" ");
+                        accName[listCount] = lineArr[0];
+                        accPassword[listCount] = lineArr[2];
+                        Object[] accManagerRow = {accName[listCount], accPassword[listCount]};
+                        accManagerTableModel.addRow(accManagerRow);
+                        listCount++;
+                    }
+                    input.close();
+        
+                    } catch (FileNotFoundException x) {
+                        x.printStackTrace();
+                    }
+    }
     public static void main(String[] args) {
         InventoryBaby bonk = new InventoryBaby();
     }
