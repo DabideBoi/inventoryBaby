@@ -508,23 +508,26 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
                     }
             }
         });
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-        accManagerFrame.add(removeAccount);
-        removeAccount.setBounds(700, 300,300, 200);
-        removeAccount.addActionListener(new ActionListener(){  // Remove Button
         
->>>>>>> Stashed changes
-     
+        //accManagerFrame.add(removeAccount);
+        //removeAccount.setBounds(700, 300,300, 200);
+        // removeAccount.addActionListener(new ActionListener(){  // Remove Button
+        
         //Transaction Log
         Admin.add(transLog);
         transLog.setBounds(770, 120, 300, 300);
         //Initialization
         JFrame transLogFrame = new JFrame();
+        JButton transLogLoad = new JButton("Load");
         JButton transLogBack = new JButton("Back");
+        String[] columns = {"Receipt", "Cashier"};
         DefaultTableModel model = new DefaultTableModel();
-        JTable transLogTable = new JTable(model); //will be using itemList as DefaultListModel
+        JTable transLogTable = new JTable(model) {
+        	public boolean isCellEditable(int row, int column) {          
+                return false;  
+        	}    
+        };
+        JScrollPane transLogTablePanel = new JScrollPane(transLogTable);
         JTextArea transLogTextArea = new JTextArea();
         //JFrame
         transLogFrame.setLayout(null);
@@ -532,56 +535,67 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         transLogFrame.setSize(1200,700);
         transLogFrame.setLocationRelativeTo(null);
         transLogFrame.add(transLogBack);
-        transLogFrame.add(transLogTable);
-        transLogTable.setBounds(50,160,500,200); //JList
-        //Back Button
-        transLogBack.setBounds(25,5,120,30);
-<<<<<<< Updated upstream
+        transLogFrame.add(transLogTablePanel);
+        transLogFrame.add(transLogLoad);
+        transLogFrame.add(transLogTextArea);
+        //Objects
+        transLogLoad.setBounds(25+150,5,120,30); //Load
+        transLogBack.setBounds(25,5,120,30); //Back
+        transLogTablePanel.setBounds(50,160,500,200); //JTable
+        transLogTable.setFillsViewportHeight(true);
+        transLogTable.setEnabled(true);
+        model.setColumnIdentifiers(columns);
+        transLogTextArea.setBounds(50+550,160,500,200); //JTextArea
+        
         transLogBack.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 transLogFrame.dispose();
                 Admin.setVisible(true);
             }
         });
+        
         transLog.addActionListener(new ActionListener(){ /// Transaction Logs
             public void actionPerformed(ActionEvent e){
-=======
-        transLogBack.addActionListener(new ActionListener({
-            public void actionPerformed(ActionEvent e){
-                //Missing code
-            }
-        });
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-				Admin.dispose();
-				transLogFrame.setVisible(true);
-				
-				//FileReader for logs
-				itemList.removeAllElements();
+            	Admin.dispose();
+            	transLogFrame.setVisible(true);
+            	
+            	//FileReader for logs
 				try{
 					Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\log.txt"));
 					while(input.hasNextLine()){
-						String line = input.nextLine(); 
+						String line = input.nextLine();
+						System.out.println(line); 
 						String[] lineArr = line.split("/");
-	                	itemList.addElement();
-				}		
+	                	model.addRow(lineArr);
+					}		
 				} catch (Exception ex){
 					System.out.println(ex);
 				}
             }
         });
-        transL.addActionListener(new ActionListener(){
+        
+        transLogLoad.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e){
-        		
+        		//FileReader for logs
+				try{
+					Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\" + transLogTable.getValueAt(transLogTable.getSelectedRow(), 0) + ".txt"));
+					String line = input.nextLine();
+					int i = 0;
+					while(input.hasNextLine()){ //Stops at the end of the receipt
+						transLogTextArea.append(line);
+						JOptionPane.showMessageDialog(null,line + "\n" + transLogTable.getValueAt(transLogTable.getSelectedRow(), 0));
+						i++;
+					}		
+				} catch (Exception ex){
+					System.out.println(ex);
+				}
         	}
         });
-     
+		
     } //END OF CONSTRUCTOR
     
     
     public void actionPerformed(ActionEvent e){
-
-
 
     }
     
