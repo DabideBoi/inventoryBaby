@@ -46,10 +46,10 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
     DecimalFormat df = new DecimalFormat("0.00");
     
     JFrame Cashier = new JFrame();
-        JFrame Receipt = new JFrame();
-        JTextArea ReceiptDisplay = new JTextArea();
-        JScrollPane ReceiptScroll = new JScrollPane(ReceiptDisplay);
-        JButton ReceiptClose = new JButton("Close");
+    JFrame Receipt = new JFrame();
+    JTextArea ReceiptDisplay = new JTextArea();
+    JScrollPane ReceiptScroll = new JScrollPane(ReceiptDisplay);
+    JButton ReceiptClose = new JButton("Close");
     String[] cols = {"ID Code", "Amount", "Price", "Name"};
     String[] sel = new String[4];
     DefaultTableModel cart = new DefaultTableModel(cols, 0);
@@ -529,6 +529,7 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         };
         JScrollPane transLogTablePanel = new JScrollPane(transLogTable);
         JTextArea transLogTextArea = new JTextArea();
+       		
         //JFrame
         transLogFrame.setLayout(null);
         transLogFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -539,13 +540,17 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         transLogFrame.add(transLogLoad);
         transLogFrame.add(transLogTextArea);
         //Objects
+        transLogTextArea.setTabSize(8);
+		transLogTextArea.setFont(new java.awt.Font("Monospaced", 0, 14));
+        transLogTextArea.setLineWrap(true);
+        transLogTextArea.setEditable(false);
         transLogLoad.setBounds(25+150,5,120,30); //Load
         transLogBack.setBounds(25,5,120,30); //Back
         transLogTablePanel.setBounds(50,160,500,200); //JTable
         transLogTable.setFillsViewportHeight(true);
         transLogTable.setEnabled(true);
         model.setColumnIdentifiers(columns);
-        transLogTextArea.setBounds(50+550,160,500,200); //JTextArea
+        transLogTextArea.setBounds(50+550,160,500-100-20,200+200+50); //JTextArea
         
         transLogBack.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -559,9 +564,12 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
             	Admin.dispose();
             	transLogFrame.setVisible(true);
             	
+            	model.getDataVector().removeAllElements();
+            	transLogTextArea.setText("");
+            	
             	//FileReader for logs
 				try{
-					Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\log.txt"));
+					Scanner input = new Scanner(new FileReader("receipts\\log.txt"));
 					while(input.hasNextLine()){
 						String line = input.nextLine();
 						System.out.println(line); 
@@ -577,14 +585,13 @@ public class InventoryBaby extends JFrame implements ItemListener, ActionListene
         transLogLoad.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e){
         		//FileReader for logs
+        		transLogTextArea.setText("");
 				try{
-					Scanner input = new Scanner(new FileReader("C:\\Users\\asus\\Documents\\GitHub\\inventoryBaby\\receipts\\" + transLogTable.getValueAt(transLogTable.getSelectedRow(), 0) + ".txt"));
-					String line = input.nextLine();
-					int i = 0;
+					Scanner input = new Scanner(new FileReader("receipts\\" + transLogTable.getValueAt(transLogTable.getSelectedRow(), 0) + ".txt"));
 					while(input.hasNextLine()){ //Stops at the end of the receipt
-						transLogTextArea.append(line);
-						JOptionPane.showMessageDialog(null,line + "\n" + transLogTable.getValueAt(transLogTable.getSelectedRow(), 0));
-						i++;
+						String line = input.nextLine();
+						transLogTextArea.append(line + "\n");
+						//JOptionPane.showMessageDialog(null,line + "\n" + transLogTable.getValueAt(transLogTable.getSelectedRow(), 0));
 					}		
 				} catch (Exception ex){
 					System.out.println(ex);
