@@ -2,6 +2,5 @@
 1 1 admin
 Dabs 12345678 cashier
 Babs 12345678 admin
-Remove_Me_Pls_Senpai 12345678 admin
-yo_yo 123 admin
-yo_boi 123 cashier
+holl 123 admin
+123123 123 admin
